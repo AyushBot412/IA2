@@ -4,20 +4,14 @@
     <string name="lat_lon">Lat/Lon</string>
     <string name="locate" />
     <string name="find">find</string>
-    <string name="wel">Welcome to my App!</string>
     <string name="welcome_to_my_app">Welcome to my App!</string>
-    <string name="button2">Button2</string>
-    <string name="chance_me">chance me</string>
-    <string name="find_me">find me</string>
-    <string name="where_am_I">where am I</string>
-    <string name="where_am_i">Where am I?</string>
+
     <string name="lat_long">Lat/Long</string>
     <string name="activity_two">Activity Two</string>
     <string name="street_address">Street Address</string>
     <string name="change">change</string>
     <string name="open_second_activity">open second activity</string>
     <string name="test_pop_up">Test Pop-Up</string>
-    <string name="title_activity_login">Login</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
@@ -25,14 +19,35 @@
     <string name="welcome">"Welcome !"</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
-    <string name="title_activity_main2">"Login Page "</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="your_location">Your Location</string>
+
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="geo_locater">geo locater</string>
+    <string name="title_activity_login_screen">LoginScreen</string>
+    <string name="password">Password:</string>
+    <string name="login">Login</string>
+    <string name="title_activity_register_page">RegisterPage</string>
+    <string name="new_user_register_here">New User? Register here!</string>
+
+    <string name="username">Username:</string>
+    <string name="passwordtwo">Password</string>
+    <string name="name">Name:</string>
+    <string name="display_name">Name</string>
+
+    <string name="registration_page">Registration Page</string>
+    <string name="auto_fill_username">Username</string>
+    <string name="circle_id">Circle ID</string>
+    <string name="admin">Admin</string>
+    <string name="regular_user">Regular User</string>
+    <string name="create_user">Create User</string>
+    <string name="title_activity_your_location">YourLocation</string>
+    <string name="Ayush">\@string/ayush</string>
+
 </resources>

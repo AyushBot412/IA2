@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "929734549572",
+    "firebase_url": "https://fresh-rain-267803.firebaseio.com",
+    "project_id": "fresh-rain-267803",
+    "storage_bucket": "fresh-rain-267803.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:929734549572:android:9cf47095454305e74edc11",
+        "android_client_info": {
+          "package_name": "com.example.ia2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "929734549572-r77tliqbuv5rietvujklrnijlgqet3pk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ia2",
+            "certificate_hash": "8160655f8db202af322edcf39cadaa835327cde0"
+          }
+        },
+        {
+          "client_id": "929734549572-odbl87qromj3c87ste76336gmo8e2ef3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcpPIZh2l96PIT6QOsUGIHu8hcDipE1w0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "929734549572-odbl87qromj3c87ste76336gmo8e2ef3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

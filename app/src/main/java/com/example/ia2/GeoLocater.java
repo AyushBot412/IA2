@@ -32,12 +32,25 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
+import android.content.Intent;
+import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import android.os.Handler;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import java.util.Timer;
+import java.util.*;
 
 
 public class GeoLocater extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap personalMap;
     private LatLng ltlng;
     private LatLng newCoords;
+    private Timer mTimer;
 
 
 
@@ -46,9 +59,18 @@ public class GeoLocater extends AppCompatActivity implements OnMapReadyCallback 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geo_locater);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mymap);
         mapFragment.getMapAsync(this);
+
+        mTimer = new Timer();
+        SafeAreaCheckTask safeAreaCheckTask = new SafeAreaCheckTask();
+        mTimer.schedule(safeAreaCheckTask,5000, 10000);
+
+
+
+
 
         /*
         I had an error in which I copied and pasted the code from
@@ -59,6 +81,7 @@ public class GeoLocater extends AppCompatActivity implements OnMapReadyCallback 
         */
 
     }
+
 
     public void initLatLongToCurrentlocation ()
     {

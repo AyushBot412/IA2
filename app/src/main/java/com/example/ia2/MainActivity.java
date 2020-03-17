@@ -10,12 +10,15 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.util.Log;
@@ -33,13 +36,54 @@ import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.List;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+/*
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import com.google.android.  libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.PlaceLikelihood;
+import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
+import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
+import com.google.android.libraries.places.api.net.PlacesClient;
+*/
+import java.util.Arrays;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity  {
     private Button button;
+    private Button yourLocationButton;
     private Object GeoLocater;
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
 
-    public void locationPermission() {
+    public void  locationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             //the if statement checks whether or not the perms have been granted
@@ -68,12 +112,10 @@ public class MainActivity extends AppCompatActivity {
                     //show up when you click deny.
 
 
-
-                    //TODO make an intent to send them back to the login/register page
-
-
                    Snackbar.make(button, "You denied permission.", Snackbar.LENGTH_LONG)
                                     .setAction("Action", null).show();
+                        onClickToMainPage();
+
 
                 }
 
@@ -83,25 +125,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    //TODO fix the current place reciever
-/*
-    List<Place.Field> placeFields = Collections.singletonList(Place.Field.NAME);
-    public FindCurrentPlaceRequest () {
 
+    public void onClickToMainPage () {
+        Intent intent = new Intent (this, LoginScreen.class);
+        startActivity(intent);
     }
-
-    // Use the builder to create a FindCurrentPlaceRequest.
-    public static FindCurrentPlaceRequest.Builder builder (List<Place.Field> placeFields){
-
-    }
-    public static FindCurrentPlaceRequest newInstance (List<Place.Field> placeFields)
-    FindCurrentPlaceRequest request =
-            FindCurrentPlaceRequest.newInstance(placeFields);
-
-
-
-*/
-
 
 
 
@@ -111,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         locationPermission();
 
         button = (Button) findViewById(R.id.button2);
@@ -119,6 +148,14 @@ public class MainActivity extends AppCompatActivity {
 
             public void onClick(View v) {
                 openSecondActivity();
+            }
+        });
+        yourLocationButton = (Button) findViewById(R.id.button5);
+        yourLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            public void onClick(View v) {
+                openYourLocationActivity();
             }
         });
 
@@ -136,14 +173,33 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+      /*  try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Priority Notifications")
+                .setContentTitle("Yeh mera title hai.")
+                .setPriority(1)
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setAutoCancel(true)
+                .setContentText("This is my text.");
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
+        managerCompat.notify(999,builder.build());
+*/
 
 
     }
-
     public void openSecondActivity() {
         Intent intent = new Intent(this, GeoLocater.class);
         startActivity(intent);
     }
+    public void openYourLocationActivity () {
+        Intent intent = new Intent (this, YourLocation.class);
+        startActivity(intent);
+    }
+
+
 
 
     public void Locate(View v) {
@@ -177,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
 
         requestQueue.add(jsonObjectRequest);
     }
+
 
 
 
