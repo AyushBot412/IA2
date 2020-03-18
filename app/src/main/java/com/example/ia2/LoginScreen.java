@@ -10,13 +10,15 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.Timer;
 import java.util.*;
 
 
 public class LoginScreen extends AppCompatActivity {
 
-    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,28 +28,31 @@ public class LoginScreen extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-      /*  try {
-            mHandler.removeCallbacks(mUpdateTimerTask);
-            mHandler.postDelayed(mUpdateTimerTask, 5000);//this delay is only for initial startup
 
-        } catch (Exception e) {
-        }*/
+
     }
 
- /*   public Runnable mUpdateTimerTask = new Runnable() {
-        @Override
-        public void run() {
-            ((EditText) findViewById(R.id.editText)).setText(Calendar.getInstance().getTime().toString());
-            mHandler.postDelayed(this, 3000);
-        }
-    };*/
+
+
 
 
     public void onClick (View v){
         Intent intent = new Intent(this, RegisterPage.class);
         startActivity(intent);
     }
+
+    public void onLogin(View view) {
+        EditText userName = findViewById(R.id.editText);
+        String actualUserName = userName.getText().toString();
+
+        EditText password = findViewById(R.id.editText4);
+        String actualPassword = password.getText().toString();
+
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        String id = database.collection("users").getId();
+
     }
+}
 
 
 

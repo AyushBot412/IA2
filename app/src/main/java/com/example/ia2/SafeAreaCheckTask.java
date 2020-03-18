@@ -48,7 +48,7 @@ public class SafeAreaCheckTask extends TimerTask {
             }
         }
 
-        //I want to send a notification the first time durationa exceeds the limit
+        //I want to send a notification the first time duration exceeds the limit
         //regardless of where the user is.
         if (mDurationOutsideSafeArea >= mLimitOnOutsideSafeAreaTimeInSeconds) {
             if (mSentNotification == false ) {
