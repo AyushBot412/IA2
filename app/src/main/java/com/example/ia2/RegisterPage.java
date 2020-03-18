@@ -38,7 +38,6 @@ public class RegisterPage extends AppCompatActivity {
     public void onCreateUser(View view) {
         //TODO Error Handling
         //Username, Name and Password should have their own prerequisites.
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
 
         Map<String, Object> user = new HashMap<>();
 
@@ -49,6 +48,7 @@ public class RegisterPage extends AppCompatActivity {
         EditText Username = findViewById(R.id.editText5);
         String actualUserName = Username.getText().toString();
         user.put("Username", actualUserName);
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
 
         EditText Password = findViewById(R.id.editText6);
         String actualPassword = Password.getText().toString();
