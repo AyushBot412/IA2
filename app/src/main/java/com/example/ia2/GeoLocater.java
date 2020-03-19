@@ -16,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import android.os.Bundle;
@@ -112,7 +113,7 @@ public class GeoLocater extends AppCompatActivity implements OnMapReadyCallback 
                             double lng1 = -122.031670;
                             newCoords = new LatLng(lat1, lng1);
                             personalMap.addMarker(new MarkerOptions().position(ltlng).title("Current"));
-                            personalMap.addMarker(new MarkerOptions().position(newCoords).title("New"));
+                            personalMap.addCircle(new CircleOptions().center(ltlng).radius(5).fillColor(-16776961));
                             personalMap.moveCamera(CameraUpdateFactory.newLatLng(ltlng));
                         }
                     },

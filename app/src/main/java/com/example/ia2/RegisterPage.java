@@ -31,32 +31,32 @@ public class RegisterPage extends AppCompatActivity {
         setContentView(R.layout.activity_register_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-
     }
 
     public void onCreateUser(View view) {
+
         //TODO Error Handling
         //Username, Name and Password should have their own prerequisites.
 
-        Map<String, Object> user = new HashMap<>();
+        User user = new User();
+
 
         EditText name = findViewById(R.id.editText8);
         String actualName = name.getText().toString();
-        user.put("Name", actualName);
+        user.setName(actualName);
 
         EditText Username = findViewById(R.id.editText5);
         String actualUserName = Username.getText().toString();
-        user.put("Username", actualUserName);
-        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        user.setUsername(actualUserName);
+
 
         EditText Password = findViewById(R.id.editText6);
         String actualPassword = Password.getText().toString();
-        user.put("Password", actualPassword);
+        user.setPassword(actualPassword);
 
         EditText circleID = findViewById(R.id.editText7);
         String actualCircleID = circleID.getText().toString();
-        user.put("circleID", actualCircleID);
+        user.setCircleId(actualCircleID);
 
         RadioGroup rg = (findViewById(R.id.radioGroup));
         int selectedID = rg.getCheckedRadioButtonId();
@@ -65,41 +65,28 @@ public class RegisterPage extends AppCompatActivity {
 
 
         if (userType.equals("Admin")) {
-            user.put("isAdmin", true);
+            user.setAdmin(true);
             if(validateCircleIDForAdmin() == false) {
                 Snackbar.make(view, "Invalid Circle ID. Circle ID must be unique.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         }
         else {
-            user.put("isAdmin", false);
+            user.setAdmin(false);
             if(validateCircleIDForRegularUser() == false) {
                 Snackbar.make(view, "Invalid Circle ID. Provide an admin-given Circle ID.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         }
 
-        database.collection("users")
-                .add(user)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("1", "DocumentSnapshot added with ID: " + documentReference.getId());
-                        sendToMainActivity();
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w("2", "Error adding document", e);
-                    }
-                });
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        database.collection("Users").document(user.getUsername()).set(user);
+        //this collects the user's info and creates a user object with a key according to the provided username
 
-    }
-    public void sendToMainActivity () {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
+
 
     //TODO make sure to validate all admin info
     public boolean validateCircleIDForAdmin () {

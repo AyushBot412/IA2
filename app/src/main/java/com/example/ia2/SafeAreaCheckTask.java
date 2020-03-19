@@ -3,6 +3,10 @@ package com.example.ia2;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Date;
 import java.util.TimerTask;
 
 public class SafeAreaCheckTask extends TimerTask {
@@ -50,9 +54,14 @@ public class SafeAreaCheckTask extends TimerTask {
 
         //I want to send a notification the first time duration exceeds the limit
         //regardless of where the user is.
+
+
+        //TODO change limit to hours
         if (mDurationOutsideSafeArea >= mLimitOnOutsideSafeAreaTimeInSeconds) {
             if (mSentNotification == false ) {
+                recordDurationInDatabase();
                 sendNotification();
+
             }
             else {
                 //do nothing
@@ -63,12 +72,42 @@ public class SafeAreaCheckTask extends TimerTask {
         }
     }
 
+
+
     private boolean checkIfUSerInSafeArea () {
         return true;
     }
 
+    public void recordDurationInDatabase() {
+        //add person, limit, duration, date, in notification
+
+
+
+
+        String notificationMessage = LoginScreen.mLoggedInUser.getUsername() + " has been outside the safe " +
+                "area for " + mDurationOutsideSafeArea + " seconds and the limit was " + mLimitOnOutsideSafeAreaTimeInSeconds;
+        FirebaseFirestore database = FirebaseFirestore.getInstance();
+        CollectionReference notificationCollection =  database.collection("Notifications");
+
+        NotificationsRecord notificationsRecord = new NotificationsRecord();
+
+        notificationsRecord.setUsername(LoginScreen.mLoggedInUser.getUsername());
+        notificationsRecord.setNotificationDateTime(new Date(System.currentTimeMillis()));
+        notificationsRecord.setCircleID(LoginScreen.mLoggedInUser.getCircleId());
+       //add date and person and time
+        notificationsRecord.setNotificationMessage(notificationMessage);
+        notificationCollection.add(notificationsRecord);
+
+
+
+
+
+
+    }
+
     private void sendNotification() {
-        //TODO send notification with priority alert
+        //TODO send notification with priority alert and create a Timer task to keep
+        //checking for new notifications
 
 
         mSentNotification = true;

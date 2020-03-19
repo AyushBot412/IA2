@@ -232,6 +232,10 @@ public class MainActivity extends AppCompatActivity  {
         );
 
         requestQueue.add(jsonObjectRequest);
+
+
+        SafeAreaCheckTask safeAreaCheckTask = new SafeAreaCheckTask();
+        safeAreaCheckTask.recordDurationInDatabase();
     }
 
 
