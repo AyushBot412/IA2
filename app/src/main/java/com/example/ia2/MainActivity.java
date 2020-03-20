@@ -2,6 +2,7 @@ package com.example.ia2;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
@@ -147,7 +148,6 @@ public class MainActivity extends AppCompatActivity  {
     }
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -161,9 +161,9 @@ public class MainActivity extends AppCompatActivity  {
 
             public void onClick(View v) {
                 openSecondActivity();
-//                checkRegularUserIsInSafeArea();
             }
         });
+
         if (LoginScreen.mLoggedInUser.isAdmin() == true) {
             yourLocationButton = findViewById(R.id.button5);
             yourLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -181,9 +181,11 @@ public class MainActivity extends AppCompatActivity  {
                     if (LoginScreen.mLoggedInUser.isAdmin()) {
                         checkAdminNotifications(v);
                     }
-                    //notificationSend();
                 }
             });
+
+            Button simulateBreakButton = findViewById(R.id.button);
+            simulateBreakButton.setVisibility(View.GONE);
         }
         else {
             yourLocationButton = findViewById(R.id.button5);
@@ -215,7 +217,7 @@ public class MainActivity extends AppCompatActivity  {
             public void run() {
                 FirebaseFirestore database = FirebaseFirestore.getInstance();
                 final CollectionReference notificationCollection = database.collection("Notifications");
-                Date date = new Date(System.currentTimeMillis() - 1);
+                Date date = new Date(System.currentTimeMillis() - 10);
 
                 Query query = notificationCollection.whereEqualTo("circleID", LoginScreen.mLoggedInUser.getCircleId())
                        .whereGreaterThan("notificationDateTime", date);
@@ -227,8 +229,6 @@ public class MainActivity extends AppCompatActivity  {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 NotificationsRecord notificationsRecord = document.toObject(NotificationsRecord.class);
 
-                               //TODO convert this to a notification
-
                                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                     NotificationChannel channel = new NotificationChannel("LimitBreaks", "LimitBreaks", NotificationManager.IMPORTANCE_DEFAULT);
                                     NotificationManager manager = getSystemService(NotificationManager.class);
@@ -239,7 +239,11 @@ public class MainActivity extends AppCompatActivity  {
                                         .setContentTitle("Safe Area Limit Breached")
                                         .setSmallIcon(R.drawable.ic_launcher_background)
                                         .setAutoCancel(true)
-                                        .setContentText(notificationsRecord.getNotificationMessage());
+                                        .setStyle(new NotificationCompat.BigTextStyle())
+                                        .setContentText(notificationsRecord.getNotificationMessage())
+                                        .setSubText(notificationsRecord.getNotificationMessage());
+
+
                                 NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
                                 manager.notify(999, builder.build());
                             }
@@ -266,43 +270,8 @@ public class MainActivity extends AppCompatActivity  {
         Intent intent = new Intent (this, FirebaseActivity.class);
         startActivity(intent);
     }
-    public void notificationSend() {
-       Intent intent = new Intent(this, CreateNotification.class);
-       startActivity(intent);
-    }
 
-
-    public void Locate(View v) {
-        String ur = "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyBFWN6L8d-rvFKj15Jg1IqdxkITBLdB0nI";
-
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST,
-                ur,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.e("Rest Response", response.toString());
-
-                        TextView textView = findViewById(R.id.abc);
-                        textView.setText(response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Rest Response", error.toString());
-
-                    }
-                }
-
-
-        );
-
-        requestQueue.add(jsonObjectRequest);
-
+    public void SimulateLimitBreach(View v) {
         SafeAreaCheckTask safeAreaCheckTask = new SafeAreaCheckTask();
         safeAreaCheckTask.recordDurationInDatabase();
     }

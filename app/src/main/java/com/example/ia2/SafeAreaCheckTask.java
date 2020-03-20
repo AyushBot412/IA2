@@ -64,10 +64,6 @@ public class SafeAreaCheckTask {
                 mPreviouslyOutsideSafeArea = false;
                 mDurationOutsideSafeArea = mEndTimeInSeconds - mStartTimeInSeconds;
            }
-            else {
-                //nothing to do here
-            }
-
         }
         else {
             if (mPreviouslyOutsideSafeArea == false) {
@@ -84,18 +80,11 @@ public class SafeAreaCheckTask {
         if (mDurationOutsideSafeArea >= mLimitOnOutsideSafeAreaTimeInSeconds) {
             if (mSentNotification == false ) {
                 recordDurationInDatabase();
-                sendNotification();
             }
-            else {
-                //do nothing
-            }
-        }
-        else {
-            //do nothing
         }
     }
+
     private boolean checkIfUSerInSafeArea () {
-        //TODO finish this method
         Location location = com.example.ia2.GeoLocater.getLastKnownLocation();
         boolean inSafeArea = false;
 
@@ -116,6 +105,7 @@ public class SafeAreaCheckTask {
         double distance = distance(location.getLatitude(), location.getLongitude(), safeArea.getLatitude(), safeArea.getLongitude());
         return !(distance > safeArea.getRadius());
     }
+
     private double distance(double lat1, double lon1, double lat2, double lon2) {
         if ((lat1 == lat2) && (lon1 == lon2)) {
             return 0;
@@ -145,13 +135,6 @@ public class SafeAreaCheckTask {
        //add date and person and time
         notificationsRecord.setNotificationMessage(notificationMessage);
         notificationCollection.add(notificationsRecord);
-
-    }
-
-    private void sendNotification() {
-        //TODO send notification with priority alert and create a Timer task to keep
-        //checking for new notifications
-
-
+        mSentNotification = true;
     }
 }

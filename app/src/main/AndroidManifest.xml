@@ -19,14 +19,6 @@
         <activity android:name=".FirebaseActivity" />
         <activity android:name=".FirebasePushNotification" />
         <activity
-            android:name=".CreateNotification"
-            android:label="@string/title_activity_create_notification"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".YourLocation"
-            android:label="@string/title_activity_your_location"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".RegisterPage"
             android:label="@string/title_activity_register_page"
             android:theme="@style/AppTheme.NoActionBar" />

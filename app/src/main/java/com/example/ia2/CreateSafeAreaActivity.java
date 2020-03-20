@@ -51,15 +51,15 @@ public class CreateSafeAreaActivity extends AppCompatActivity {
         safeArea.setRadius(actualRadius);
 
         EditText circleId = findViewById(R.id.editText10);
-        String actualCircleID= circleId.getText().toString();
+        String actualCircleID = circleId.getText().toString();
         safeArea.setCircleID(actualCircleID);
 
         EditText name = findViewById(R.id.editText2);
-        String actualName= name.getText().toString();
+        String actualName = name.getText().toString();
         safeArea.setName(actualName);
 
         FirebaseFirestore database = FirebaseFirestore.getInstance();
-        CollectionReference safeAreaCollection =  database.collection("SafeAreas");
+        CollectionReference safeAreaCollection = database.collection("SafeAreas");
 
         safeAreaCollection.add(safeArea);
 
@@ -67,7 +67,4 @@ public class CreateSafeAreaActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
-
-
-
 }
