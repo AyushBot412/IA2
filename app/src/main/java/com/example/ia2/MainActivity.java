@@ -261,14 +261,12 @@ public class MainActivity extends AppCompatActivity  {
 
         handler.postDelayed(r, 1000);
     }
+
     public void openSecondActivity() {
         Intent intent = new Intent(this, GeoLocater.class);
         startActivity(intent);
     }
-    public void openYourLocationActivity () {
-        Intent intent = new Intent (this, YourLocation.class);
-        startActivity(intent);
-    }
+   
     public void openNotificationActivity () {
         Intent intent = new Intent (this, FirebaseActivity.class);
         startActivity(intent);
