@@ -84,7 +84,7 @@ public class RegisterPage extends AppCompatActivity {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         database.collection("Users").document(user.getUsername()).set(user);
         //this collects the user's info and creates a user object with a key according to the provided username
-
+        LoginScreen.mLoggedInUser = user;
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
