@@ -1,0 +1,106 @@
+@startuml
+
+class CreateNotification extends AppCompatActivity
+{
+     onCreate()
+}
+class CreateSafeAreaActivity extends AppCompatActivity
+{
+    onCreate()
+    onMakeNewSafeArea()
+}
+class GeoLocater extends AppCompatActivity implements OnMapReadyCallback
+{
+    GoogleMap personalMap
+    CameraPosition mCameraPosition
+    getDeviceLocation()
+    showSafeAreas()
+    onCreate()
+    checkRegularUserIsInSafeArea()
+    onMapReady()
+}
+class LoginScreen extends AppCompatActivity
+{
+    User mLoggedInUser
+    onCreate()
+    onLogin()
+    onNewUserRegistration()
+}
+class MainActivity extends AppCompatActivity
+{
+    GeoLocater mGeoLocator
+    locationPermission()
+    onRequestPermissionsResult()
+    onClickToMainPage()
+    onRequestPermissionsResult()
+    onCreate()
+    checkAdminNotifications()
+    openCreateNewSafeArea()
+}
+
+
+
+class NotificationsRecord
+{
+    String username;
+    Date notificationDateTime;
+    String circleID;
+    String notificationMessage;
+}
+
+
+
+class RegisterPage extends AppCompatActivity
+{
+    onCreateUser()
+    validateCircleIDForAdmin()
+    validateCircleIDForRegularUser()
+}
+
+
+
+class SafeArea
+{
+     double latitude;
+     double longitude;
+     double radius;
+     String circleID;
+     String name;
+}
+
+
+class SafeAreaCheckTask
+{
+    long mEndTimeInSeconds;
+    long mStartTimeInSeconds;
+    boolean mPreviouslyOutsideSafeArea = false;
+    long mDurationOutsideSafeArea = 0;
+    long mLimitOnOutsideSafeAreaTimeInSeconds = 100;
+    boolean mSentNotification = false;
+    SafeArea [] safeAreas = new SafeArea[10];
+    SafeAreaCheckTask()
+    check()
+    checkIfUSerInSafeArea()
+    compareSafeAreas()
+    distance()
+    recordDurationInDatabase()
+}
+
+
+class timerNotifications  implements Runnable
+{
+    run()
+    showAdminNotifications()
+}
+
+
+
+class User
+{
+     String name;
+     String username;
+     String password;
+     String circleId;
+     boolean isAdmin;
+}
+@enduml
