@@ -161,31 +161,36 @@ public class MainActivity extends AppCompatActivity  {
 
             public void onClick(View v) {
                 openSecondActivity();
+//                checkRegularUserIsInSafeArea();
             }
         });
-        yourLocationButton = (Button) findViewById(R.id.button5);
-        yourLocationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
+        if (LoginScreen.mLoggedInUser.isAdmin() == true) {
+            yourLocationButton = (Button) findViewById(R.id.button5);
+            yourLocationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
 
-            public void onClick(View v) {
-                openYourLocationActivity();
-            }
-        });
-        notificationButton = findViewById(R.id.button6);
-        notificationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-
-            public void onClick(View v) {
-                if(LoginScreen.mLoggedInUser.isAdmin()) {
-                    checkAdminNotifications(v);
+                public void onClick(View v) {
+                    openCreateNewSafeArea();
                 }
-                else {
-                    checkRegularUserIsInSafeArea(v);
+            });
+            notificationButton = findViewById(R.id.button6);
+            notificationButton.setOnClickListener(new View.OnClickListener() {
+                @Override
 
+                public void onClick(View v) {
+                    if (LoginScreen.mLoggedInUser.isAdmin()) {
+                        checkAdminNotifications(v);
+                    }
+                    //notificationSend();
                 }
-                //notificationSend();
-            }
-        });
+            });
+        }
+        else {
+            yourLocationButton = (Button) findViewById(R.id.button5);
+            yourLocationButton.setVisibility(View.GONE);
+            notificationButton = findViewById(R.id.button6);
+            notificationButton.setVisibility(View.GONE);
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -248,22 +253,13 @@ public class MainActivity extends AppCompatActivity  {
         };
         handler.postDelayed(r, 1000);
     }
-    public void checkRegularUserIsInSafeArea(final View view) {
-        final Handler handler = new Handler();
-        final SafeAreaCheckTask safeAreaCheckTask = new SafeAreaCheckTask();
-        final Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                safeAreaCheckTask.check();
-                handler.postDelayed(this, 5000);
-            }
-        };
-
-        handler.postDelayed(r, 1000);
-    }
 
     public void openSecondActivity() {
         Intent intent = new Intent(this, GeoLocater.class);
+        startActivity(intent);
+    }
+    public void openCreateNewSafeArea () {
+        Intent intent = new Intent (this, CreateSafeAreaActivity.class);
         startActivity(intent);
     }
    
@@ -275,8 +271,6 @@ public class MainActivity extends AppCompatActivity  {
        Intent intent = new Intent(this, CreateNotification.class);
        startActivity(intent);
     }
-
-
 
 
     public void Locate(View v) {
@@ -310,12 +304,7 @@ public class MainActivity extends AppCompatActivity  {
 
         requestQueue.add(jsonObjectRequest);
 
-
         SafeAreaCheckTask safeAreaCheckTask = new SafeAreaCheckTask();
         safeAreaCheckTask.recordDurationInDatabase();
     }
-
-
-
-
 }

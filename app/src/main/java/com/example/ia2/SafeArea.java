@@ -5,6 +5,7 @@ public class SafeArea {
     private double longitude;
     private double radius;
     private String circleID;
+    private String name;
 
     public double getLatitude() {
         return latitude;
@@ -33,6 +34,14 @@ public class SafeArea {
     public void setCircleID(String circleID) {
         this.circleID = circleID;
     }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
 
 
 }

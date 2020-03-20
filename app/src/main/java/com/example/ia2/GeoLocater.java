@@ -57,7 +57,7 @@ import java.util.*;
 
 
 public class GeoLocater extends AppCompatActivity implements OnMapReadyCallback {
-    private GoogleMap personalMap;
+    private static GoogleMap personalMap;
 
     private static final String TAG = GeoLocater.class.getSimpleName();
     private CameraPosition mCameraPosition;
@@ -112,6 +112,16 @@ public class GeoLocater extends AppCompatActivity implements OnMapReadyCallback 
         }
     }
 
+    public static void showSafeAreas (SafeArea[] safeAreas) {
+     for (int i = 0; i < safeAreas.length; i++) {
+         if (safeAreas[i] != null) {
+             LatLng latLng = new LatLng(safeAreas[i].getLatitude(), safeAreas[i].getLongitude());
+             personalMap.addMarker(new MarkerOptions().position(latLng).title(safeAreas[i].getName()));
+             personalMap.addCircle(new CircleOptions().center(latLng).radius(5).fillColor(-16776961));
+         }
+     }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,14 +137,31 @@ public class GeoLocater extends AppCompatActivity implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mymap);
         mapFragment.getMapAsync(this);
+    }
 
+    public void checkRegularUserIsInSafeArea() {
+        final Handler handler = new Handler();
+        final SafeAreaCheckTask safeAreaCheckTask = new SafeAreaCheckTask();
+
+        final Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                safeAreaCheckTask.check();
+                handler.postDelayed(this, 5000);
+                showSafeAreas(safeAreaCheckTask.safeAreas);
+            }
+        };
+
+        handler.postDelayed(r, 1000);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         personalMap = googleMap;
         getDeviceLocation();
+
         personalMap.setMyLocationEnabled(true);
         personalMap.getUiSettings().setMyLocationButtonEnabled(true);
+        checkRegularUserIsInSafeArea();
     }
 }

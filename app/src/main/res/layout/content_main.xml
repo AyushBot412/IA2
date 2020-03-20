@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
 
         android:onClick="Locate"
-        android:text="@string/lat_long"
+        android:text="@string/simulate_limit_break"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.248"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -51,7 +51,7 @@
         android:layout_width="135dp"
         android:layout_height="54dp"
 
-        android:text="@string/open_second_activity"
+        android:text="@string/open_map"
 
 
         app:layout_constraintBottom_toBottomOf="parent"
@@ -65,7 +65,7 @@
         android:id="@+id/button5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/your_location"
+        android:text="@string/create_safe_area"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -77,7 +77,7 @@
         android:id="@+id/button6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/engage_limit_break_alerts"
+        android:text="@string/receive_break_alerts"
         android:onClick="notificationSend"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

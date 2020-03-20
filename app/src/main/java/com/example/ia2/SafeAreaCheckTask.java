@@ -30,14 +30,14 @@ public class SafeAreaCheckTask {
     private long mEndTimeInSeconds;
     private long mStartTimeInSeconds;
     private boolean mPreviouslyOutsideSafeArea = false;
-    private long mDurationOutsideSafeArea;
-    private long mLimitOnOutsideSafeAreaTimeInSeconds;
+    private long mDurationOutsideSafeArea = 0;
+    private long mLimitOnOutsideSafeAreaTimeInSeconds = 100;
     public static boolean mSentNotification = false;
-    private SafeArea [] safeAreas = new SafeArea[10];
+    public SafeArea [] safeAreas = new SafeArea[10];
 
     public SafeAreaCheckTask () {
         FirebaseFirestore database = FirebaseFirestore.getInstance();
-        final CollectionReference safeAreaCollection = database.collection("Safe Areas");
+        final CollectionReference safeAreaCollection = database.collection("SafeAreas");
 
         Query query = safeAreaCollection.whereEqualTo("circleID", LoginScreen.mLoggedInUser.getCircleId());
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -48,7 +48,6 @@ public class SafeAreaCheckTask {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         safeAreas[i++] = document.toObject(SafeArea.class);
                     }
-                    ;
                 }
             }
         });
@@ -99,6 +98,7 @@ public class SafeAreaCheckTask {
         //TODO finish this method
         Location location = com.example.ia2.GeoLocater.getLastKnownLocation();
         boolean inSafeArea = false;
+
         for (int i = 0;  i < safeAreas.length; i++) {
             inSafeArea = compareSafeAreas(location, safeAreas[i]);
             if (inSafeArea == true) {
@@ -110,6 +110,9 @@ public class SafeAreaCheckTask {
 
     public boolean compareSafeAreas (Location location, SafeArea safeArea)
     {
+        if(location == null || safeArea == null)
+            return false;
+
         double distance = distance(location.getLatitude(), location.getLongitude(), safeArea.getLatitude(), safeArea.getLongitude());
         if (distance > safeArea.getRadius()) {
             return false;

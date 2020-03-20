@@ -12,8 +12,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FirebaseActivity"></activity>
-        <activity android:name=".FirebasePushNotification"></activity>
+        <activity
+            android:name=".CreateSafeAreaActivity"
+            android:label="@string/title_activity_create_safe_area"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".FirebaseActivity" />
+        <activity android:name=".FirebasePushNotification" />
         <activity
             android:name=".CreateNotification"
             android:label="@string/title_activity_create_notification"

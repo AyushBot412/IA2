@@ -50,6 +50,10 @@
     <string name="title_activity_your_location">YourLocation</string>
     <string name="Ayush">\@string/ayush</string>
     <string name="make_notif">make Notif</string>
-    <string name="engage_limit_break_alerts">engage limit break alerts</string>
+    <string name="receive_break_alerts"> Receive break alerts</string>
+    <string name="title_activity_create_safe_area">CreateSafeAreaActivity</string>
+    <string name="create_safe_area">create safe area</string>
+    <string name="open_map">open map</string>
+    <string name="simulate_limit_break">simulate limit break</string>
 
 </resources>
