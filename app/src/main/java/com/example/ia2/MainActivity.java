@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         locationPermission();
 
-        button = (Button) findViewById(R.id.button2);
+        button = findViewById(R.id.button2);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
 
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
         if (LoginScreen.mLoggedInUser.isAdmin() == true) {
-            yourLocationButton = (Button) findViewById(R.id.button5);
+            yourLocationButton = findViewById(R.id.button5);
             yourLocationButton.setOnClickListener(new View.OnClickListener() {
                 @Override
 
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity  {
             });
         }
         else {
-            yourLocationButton = (Button) findViewById(R.id.button5);
+            yourLocationButton = findViewById(R.id.button5);
             yourLocationButton.setVisibility(View.GONE);
             notificationButton = findViewById(R.id.button6);
             notificationButton.setVisibility(View.GONE);
@@ -243,7 +243,6 @@ public class MainActivity extends AppCompatActivity  {
                                 NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
                                 manager.notify(999, builder.build());
                             }
-                            ;
                         }
                     }
                 });
@@ -287,7 +286,7 @@ public class MainActivity extends AppCompatActivity  {
                     public void onResponse(JSONObject response) {
                         Log.e("Rest Response", response.toString());
 
-                        TextView textView = (TextView) findViewById(R.id.abc);
+                        TextView textView = findViewById(R.id.abc);
                         textView.setText(response.toString());
                     }
                 },

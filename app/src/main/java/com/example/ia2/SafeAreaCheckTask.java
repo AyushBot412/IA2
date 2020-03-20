@@ -114,12 +114,7 @@ public class SafeAreaCheckTask {
             return false;
 
         double distance = distance(location.getLatitude(), location.getLongitude(), safeArea.getLatitude(), safeArea.getLongitude());
-        if (distance > safeArea.getRadius()) {
-            return false;
-        }
-        else {
-            return true;
-        }
+        return !(distance > safeArea.getRadius());
     }
     private double distance(double lat1, double lon1, double lat2, double lon2) {
         if ((lat1 == lat2) && (lon1 == lon2)) {

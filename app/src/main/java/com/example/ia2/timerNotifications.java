@@ -59,7 +59,6 @@ public class timerNotifications  implements Runnable {
                         NotificationsRecord notificationsRecord = document.toObject(NotificationsRecord.class);
                         showAdminNotifications();
                     }
-                    ;
                 }
             }
         });
