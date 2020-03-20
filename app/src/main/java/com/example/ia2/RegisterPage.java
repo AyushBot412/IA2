@@ -25,6 +25,7 @@ import java.util.Map;
 
 public class RegisterPage extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +35,7 @@ public class RegisterPage extends AppCompatActivity {
     }
 
     public void onCreateUser(View view) {
+
 
         //TODO Error Handling
         //Username, Name and Password should have their own prerequisites.

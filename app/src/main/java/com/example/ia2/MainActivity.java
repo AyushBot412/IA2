@@ -2,8 +2,11 @@ package com.example.ia2;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.android.volley.Request;
@@ -11,6 +14,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -21,6 +26,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.Menu;
@@ -30,11 +36,17 @@ import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -76,12 +88,15 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 */
 import java.util.Arrays;
 import java.util.List;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity  {
     private Button button;
     private Button yourLocationButton;
     private Object GeoLocater;
+    private Button notificationButton;
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
+
 
     public void  locationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -138,8 +153,6 @@ public class MainActivity extends AppCompatActivity  {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
         locationPermission();
 
         button = (Button) findViewById(R.id.button2);
@@ -158,7 +171,21 @@ public class MainActivity extends AppCompatActivity  {
                 openYourLocationActivity();
             }
         });
+        notificationButton = findViewById(R.id.button6);
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
 
+            public void onClick(View v) {
+                if(LoginScreen.mLoggedInUser.isAdmin()) {
+                    checkAdminNotifications(v);
+                }
+                else {
+                    checkRegularUserIsInSafeArea(v);
+
+                }
+                //notificationSend();
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -173,22 +200,66 @@ public class MainActivity extends AppCompatActivity  {
                         .setAction("Action", null).show();
             }
         });
-      /*  try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Priority Notifications")
-                .setContentTitle("Yeh mera title hai.")
-                .setPriority(1)
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setAutoCancel(true)
-                .setContentText("This is my text.");
-        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
-        managerCompat.notify(999,builder.build());
-*/
 
+    }
 
+    public void checkAdminNotifications(final View v){
+        final Handler handler = new Handler();
+        final Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                FirebaseFirestore database = FirebaseFirestore.getInstance();
+                final CollectionReference notificationCollection = database.collection("Notifications");
+                Date date = new Date(System.currentTimeMillis() - 1);
+
+                Query query = notificationCollection.whereEqualTo("circleID", LoginScreen.mLoggedInUser.getCircleId())
+                       .whereGreaterThan("notificationDateTime", date);
+
+                query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                NotificationsRecord notificationsRecord = document.toObject(NotificationsRecord.class);
+
+                               //TODO convert this to a notification
+
+                                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    NotificationChannel channel = new NotificationChannel("LimitBreaks", "LimitBreaks", NotificationManager.IMPORTANCE_DEFAULT);
+                                    NotificationManager manager = getSystemService(NotificationManager.class);
+                                    manager.createNotificationChannel(channel);
+                                }
+
+                                NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "LimitBreaks")
+                                        .setContentTitle("Safe Area Limit Breached")
+                                        .setSmallIcon(R.drawable.ic_launcher_background)
+                                        .setAutoCancel(true)
+                                        .setContentText(notificationsRecord.getNotificationMessage());
+                                NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
+                                manager.notify(999, builder.build());
+                            }
+                            ;
+                        }
+                    }
+                });
+
+                handler.postDelayed(this, 10000);
+            }
+        };
+        handler.postDelayed(r, 1000);
+    }
+    public void checkRegularUserIsInSafeArea(final View view) {
+        final Handler handler = new Handler();
+        final SafeAreaCheckTask safeAreaCheckTask = new SafeAreaCheckTask();
+        final Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                safeAreaCheckTask.check();
+                handler.postDelayed(this, 5000);
+            }
+        };
+
+        handler.postDelayed(r, 1000);
     }
     public void openSecondActivity() {
         Intent intent = new Intent(this, GeoLocater.class);
@@ -197,6 +268,14 @@ public class MainActivity extends AppCompatActivity  {
     public void openYourLocationActivity () {
         Intent intent = new Intent (this, YourLocation.class);
         startActivity(intent);
+    }
+    public void openNotificationActivity () {
+        Intent intent = new Intent (this, FirebaseActivity.class);
+        startActivity(intent);
+    }
+    public void notificationSend() {
+       Intent intent = new Intent(this, CreateNotification.class);
+       startActivity(intent);
     }
 
 

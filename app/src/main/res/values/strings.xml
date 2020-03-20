@@ -5,7 +5,7 @@
     <string name="locate" />
     <string name="find">find</string>
     <string name="welcome_to_my_app">Welcome to my App!</string>
-
+    <string name="title_activity_create_notification">CreateNotification</string>
     <string name="lat_long">Lat/Long</string>
     <string name="activity_two">Activity Two</string>
     <string name="street_address">Street Address</string>
@@ -49,5 +49,7 @@
     <string name="create_user">Create User</string>
     <string name="title_activity_your_location">YourLocation</string>
     <string name="Ayush">\@string/ayush</string>
+    <string name="make_notif">make Notif</string>
+    <string name="engage_limit_break_alerts">engage limit break alerts</string>
 
 </resources>

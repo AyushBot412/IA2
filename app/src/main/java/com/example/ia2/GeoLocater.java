@@ -1,21 +1,26 @@
 package com.example.ia2;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -31,6 +36,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import org.json.JSONObject;
 import android.content.Intent;
@@ -49,11 +58,59 @@ import java.util.*;
 
 public class GeoLocater extends AppCompatActivity implements OnMapReadyCallback {
     private GoogleMap personalMap;
-    private LatLng ltlng;
-    private LatLng newCoords;
-    private Timer mTimer;
 
+    private static final String TAG = GeoLocater.class.getSimpleName();
+    private CameraPosition mCameraPosition;
+    private static final int DEFAULT_ZOOM = 15;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
 
+    // The entry point to the Places API.
+    private PlacesClient mPlacesClient;
+
+    public static Location getLastKnownLocation() {
+        return mLastKnownLocation;
+    }
+
+    public static Location mLastKnownLocation;
+
+    // The entry point to the Fused Location Provider.
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+
+    /**
+     * Gets the current location of the device, and positions the map's camera.
+     */
+    public void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+            locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    if (task.isSuccessful()) {
+                        // Set the map's camera position to the current location of the device.
+                        mLastKnownLocation = task.getResult();
+                        if (mLastKnownLocation != null) {
+                            personalMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(mLastKnownLocation.getLatitude(),
+                                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                        }
+                    } else {
+                        Log.d(TAG, "Current location is null. Using defaults.");
+                        Log.e(TAG, "Exception: %s", task.getException());
+                        personalMap.moveCamera(CameraUpdateFactory
+                                .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                        personalMap.getUiSettings().setMyLocationButtonEnabled(false);
+                    }
+                }
+            });
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
 
 
     @Override
@@ -61,83 +118,23 @@ public class GeoLocater extends AppCompatActivity implements OnMapReadyCallback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_geo_locater);
 
+        Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
+        mPlacesClient = Places.createClient(this);
+
+        // Construct a FusedLocationProviderClient.
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.mymap);
         mapFragment.getMapAsync(this);
 
-        mTimer = new Timer();
-        SafeAreaCheckTask safeAreaCheckTask = new SafeAreaCheckTask();
-        mTimer.schedule(safeAreaCheckTask,5000, 10000);
-
-
-
-
-
-        /*
-        I had an error in which I copied and pasted the code from
-        MainActivity which was a basic activity, not a empty activity
-        like geolocater is.
-        It was failing because the code was trying to access toolbar
-        and fab which doesn't in an empty activity.
-        */
-
-    }
-
-
-    public void initLatLongToCurrentlocation ()
-    {
-        String u = "https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyBFWN6L8d-rvFKj15Jg1IqdxkITBLdB0nI";
-
-        try {
-
-                RequestQueue requestQueue = Volley.newRequestQueue(this);
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                    Request.Method.POST,
-                    u,
-                    null,
-                    new Response.Listener<JSONObject>()
-                    {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                //the log was deleted because it just recorded what
-                                //the object did
-
-                                JSONObject j = response.getJSONObject("location");
-                                double lat = j.getDouble("lat");
-                                double lng = j.getDouble("lng");
-                                ltlng = new LatLng(lat, lng);
-                            } catch (Exception e) {
-                            }
-                            double lat1 = 47.600350;
-                            double lng1 = -122.031670;
-                            newCoords = new LatLng(lat1, lng1);
-                            personalMap.addMarker(new MarkerOptions().position(ltlng).title("Current"));
-                            personalMap.addCircle(new CircleOptions().center(ltlng).radius(5).fillColor(-16776961));
-                            personalMap.moveCamera(CameraUpdateFactory.newLatLng(ltlng));
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.e("Rest Response", error.toString());
-
-                        }
-                    });
-
-            requestQueue.add(jsonObjectRequest);
-
-        }
-        catch (Exception e)
-        {
-
-        }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         personalMap = googleMap;
-        initLatLongToCurrentlocation();
-
+        getDeviceLocation();
+        personalMap.setMyLocationEnabled(true);
+        personalMap.getUiSettings().setMyLocationButtonEnabled(true);
     }
 }

@@ -1,6 +1,8 @@
 package com.example.ia2;
 
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,13 +13,19 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Timer;
 import java.util.*;
@@ -25,6 +33,10 @@ import java.util.*;
 
 public class LoginScreen extends AppCompatActivity {
     public static User mLoggedInUser;
+    private Timer mTimer;
+    private Timer mNotificationChecker;
+
+
 
 
     @Override
@@ -48,6 +60,7 @@ public class LoginScreen extends AppCompatActivity {
             return;
             //this will just stop the app, but won't crash it. It will remain on the login page.
         }
+
         FirebaseFirestore database = FirebaseFirestore.getInstance();
         CollectionReference userCollection = database.collection("Users");
         userCollection.document(actualUserName).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
